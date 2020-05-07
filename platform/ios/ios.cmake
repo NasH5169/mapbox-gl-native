@@ -12,8 +12,8 @@ macro(initialize_ios_target target)
 
     # Enable LTO & -Os for Release and RelWithDebInfo (which is currently still used by iOS release packages)
 
-    set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_GCC_OPTIMIZATION_LEVEL $<$<CONFIG:RELEASE>:s>)
-    set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_GCC_OPTIMIZATION_LEVEL $<$<CONFIG:RELWITHDEBINFO>:s>)
+    set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_GCC_OPTIMIZATION_LEVEL $<$<CONFIG:RELEASE>:z>)
+    set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_GCC_OPTIMIZATION_LEVEL $<$<CONFIG:RELWITHDEBINFO>:z>)
     set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_LLVM_LTO $<$<CONFIG:RELEASE>:YES>)
     set_target_properties(${target} PROPERTIES XCODE_ATTRIBUTE_LLVM_LTO $<$<CONFIG:RELWITHDEBINFO>:YES>)
 endmacro()
