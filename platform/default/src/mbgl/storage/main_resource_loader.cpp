@@ -21,11 +21,12 @@ public:
     MainResourceLoaderThread(std::shared_ptr<FileSource> assetFileSource_,
                              std::shared_ptr<FileSource> databaseFileSource_,
                              std::shared_ptr<FileSource> localFileSource_,
+                             std::shared_ptr<FileSource> maptilerFileSource_,
                              std::shared_ptr<FileSource> onlineFileSource_)
         : assetFileSource(std::move(assetFileSource_)),
           databaseFileSource(std::move(databaseFileSource_)),
           localFileSource(std::move(localFileSource_)),
-          maptilerFileSource(std::make_unique<MaptilerFileSource>()),
+          maptilerFileSource(std::move(maptilerFileSource_)),
           onlineFileSource(std::move(onlineFileSource_)) {}
 
     void request(AsyncRequest* req, const Resource& resource, const ActorRef<FileSourceRequest>& ref) {
@@ -69,7 +70,7 @@ public:
         } else if (localFileSource && localFileSource->canRequest(resource)) {
             // Local file request
             tasks[req] = localFileSource->request(resource, callback);
-        } else if (MaptilerFileSource::acceptsURL(resource.url)) {
+        } else if (maptilerFileSource->canRequest(resource)) {
             // Maptiler file request
             tasks[req] = maptilerFileSource->request(resource, callback);
         } else if (databaseFileSource && databaseFileSource->canRequest(resource)) {
@@ -137,10 +138,12 @@ public:
     Impl(std::shared_ptr<FileSource> assetFileSource_,
          std::shared_ptr<FileSource> databaseFileSource_,
          std::shared_ptr<FileSource> localFileSource_,
+         std::shared_ptr<FileSource> maptilerFileSource_,
          std::shared_ptr<FileSource> onlineFileSource_)
         : assetFileSource(std::move(assetFileSource_)),
           databaseFileSource(std::move(databaseFileSource_)),
           localFileSource(std::move(localFileSource_)),
+          maptilerFileSource(std::move(maptilerFileSource_)),
           onlineFileSource(std::move(onlineFileSource_)),
           supportsCacheOnlyRequests_(bool(databaseFileSource)),
           thread(std::make_unique<util::Thread<MainResourceLoaderThread>>(
@@ -149,6 +152,7 @@ public:
               assetFileSource,
               databaseFileSource,
               localFileSource,
+              maptilerFileSource,
               onlineFileSource)) {}
 
     std::unique_ptr<AsyncRequest> request(const Resource& resource, Callback callback) {
@@ -164,6 +168,7 @@ public:
     bool canRequest(const Resource& resource) const {
         return (assetFileSource && assetFileSource->canRequest(resource)) ||
                (localFileSource && localFileSource->canRequest(resource)) ||
+               (maptilerFileSource && maptilerFileSource->canRequest(resource)) ||
                (databaseFileSource && databaseFileSource->canRequest(resource)) ||
                (onlineFileSource && onlineFileSource->canRequest(resource));
     }
@@ -178,6 +183,7 @@ private:
     const std::shared_ptr<FileSource> assetFileSource;
     const std::shared_ptr<FileSource> databaseFileSource;
     const std::shared_ptr<FileSource> localFileSource;
+    const std::shared_ptr<FileSource> maptilerFileSource;
     const std::shared_ptr<FileSource> onlineFileSource;
     const bool supportsCacheOnlyRequests_;
     const std::unique_ptr<util::Thread<MainResourceLoaderThread>> thread;
@@ -187,6 +193,7 @@ MainResourceLoader::MainResourceLoader(const ResourceOptions& options)
     : impl(std::make_unique<Impl>(FileSourceManager::get()->getFileSource(FileSourceType::Asset, options),
                                   FileSourceManager::get()->getFileSource(FileSourceType::Database, options),
                                   FileSourceManager::get()->getFileSource(FileSourceType::FileSystem, options),
+                                  FileSourceManager::get()->getFileSource(FileSourceType::MapTiler, options),
                                   FileSourceManager::get()->getFileSource(FileSourceType::Network, options))) {}
 
 MainResourceLoader::~MainResourceLoader() = default;

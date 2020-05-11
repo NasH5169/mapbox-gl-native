@@ -307,6 +307,10 @@ namespace mbgl {
         return std::move(req);
     }
 
+    bool MaptilerFileSource::canRequest(const Resource& resource) const {
+        return acceptsURL(resource.url);
+    }
+
     bool MaptilerFileSource::acceptsURL(const std::string &url) {
         return std::equal(maptilerProtocol.begin(), maptilerProtocol.end(), url.begin());
     }

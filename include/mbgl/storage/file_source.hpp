@@ -21,6 +21,7 @@ enum FileSourceType : uint8_t {
     // - Database for read-only offline use-cases
     Database,
     FileSystem,
+    MapTiler,
     Network,
     // Resource loader acts as a proxy and has logic
     // for request delegation to Asset, Cache, and other

@@ -14,9 +14,8 @@ namespace mbgl {
 
         ~MaptilerFileSource() override;
 
-        std::unique_ptr <AsyncRequest> request(const Resource &, Callback) override;
-
-        static bool acceptsURL(const std::string &url);
+        std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;
+        bool canRequest(const Resource&) const override;
 
     private:
         class Impl;
