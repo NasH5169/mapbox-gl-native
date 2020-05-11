@@ -128,7 +128,7 @@ private:
     const std::shared_ptr<FileSource> assetFileSource;
     const std::shared_ptr<FileSource> databaseFileSource;
     const std::shared_ptr<FileSource> localFileSource;
-    const std::shared_ptr<MaptilerFileSource> maptilerFileSource;
+    const std::shared_ptr<FileSource> maptilerFileSource;
     const std::shared_ptr<FileSource> onlineFileSource;
     std::map<AsyncRequest*, std::unique_ptr<AsyncRequest>> tasks;
 };
