@@ -1,29 +1,25 @@
-#include <mbgl/storage/file_source.hpp>
-#include <mbgl/util/logging.hpp>
-#include <mbgl/util/thread.hpp>
+#pragma once
 
-#ifndef MBGL_MAPTILER_FILE_SOURCE_H
-#define MBGL_MAPTILER_FILE_SOURCE_H
+#include <mbgl/storage/file_source.hpp>
 
 namespace mbgl {
-    // File source for supporting .mbtiles maps.
-    // can only load resource URLS that are absolute paths to local files
-    class MaptilerFileSource : public FileSource {
-    public:
-        MaptilerFileSource();
 
-        ~MaptilerFileSource() override;
+namespace util {
+template <typename T> class Thread;
+} // namespace util
 
-        std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;
-        bool canRequest(const Resource&) const override;
+class MaptilerFileSource : public FileSource {
+public:
+    MaptilerFileSource(const std::string& root);
+    ~MaptilerFileSource() override;
 
-    private:
-        class Impl;
+    std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;
+    bool canRequest(const Resource&) const override;
 
-        std::unique_ptr <util::Thread<Impl>> thread;
-    };
+private:
+    class Impl;
+
+    std::unique_ptr<util::Thread<Impl>> impl;
+};
 
 } // namespace mbgl
-
-
-#endif //MBGL_MAPTILER_FILE_SOURCE_H

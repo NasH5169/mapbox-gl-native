@@ -282,10 +282,9 @@ namespace mbgl {
         }
     };
 
-    MaptilerFileSource::MaptilerFileSource() :
-            thread(std::make_unique<util::Thread<Impl>>("MaptilerFileSource")) {
-
-    }
+    MaptilerFileSource::MaptilerFileSource()
+    : impl(std::make_unique<util::Thread<Impl>>(
+          util::makeThreadPrioritySetter(platform::EXPERIMENTAL_THREAD_PRIORITY_FILE), "MaptilerFileSource")) {}
 
     std::unique_ptr<AsyncRequest> MaptilerFileSource::request(const Resource &resource, FileSource::Callback callback) {
         auto req = std::make_unique<FileSourceRequest>(std::move(callback));
