@@ -28,6 +28,7 @@ namespace mbgl {
 
     class MaptilerFileSource::Impl {
     public:
+        explicit Impl(const ActorRef<Impl>&) {}
 
         std::vector<double> &split(const std::string &s, char delim, std::vector<double> &elems) {
             std::stringstream ss(s);
