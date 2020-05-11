@@ -258,7 +258,7 @@ namespace mbgl {
         }
 
     private:
-        std::map<std::string, Database> db_cache;
+        std::map<std::string, typename Database> db_cache;
 
         void close_db(const std::string &path) {
             auto ptr = db_cache.find(path);
