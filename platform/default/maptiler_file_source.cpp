@@ -2,6 +2,7 @@
 #include <sstream>
 #include <map>
 
+#include <mbgl/platform/settings.hpp>
 #include <mbgl/storage/maptiler_file_source.hpp>
 #include <mbgl/storage/file_source_request.hpp>
 
