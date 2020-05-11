@@ -10,7 +10,7 @@ template <typename T> class Thread;
 
 class MaptilerFileSource : public FileSource {
 public:
-    MaptilerFileSource(const std::string& root);
+    MaptilerFileSource();
     ~MaptilerFileSource() override;
 
     std::unique_ptr<AsyncRequest> request(const Resource&, Callback) override;

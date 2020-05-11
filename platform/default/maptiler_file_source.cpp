@@ -286,6 +286,8 @@ namespace mbgl {
     : impl(std::make_unique<util::Thread<Impl>>(
           util::makeThreadPrioritySetter(platform::EXPERIMENTAL_THREAD_PRIORITY_FILE), "MaptilerFileSource")) {}
 
+    MaptilerFileSource::~MaptilerFileSource() = default;
+
     std::unique_ptr<AsyncRequest> MaptilerFileSource::request(const Resource &resource, FileSource::Callback callback) {
         auto req = std::make_unique<FileSourceRequest>(std::move(callback));
 
@@ -313,8 +315,4 @@ namespace mbgl {
     bool MaptilerFileSource::acceptsURL(const std::string &url) {
         return std::equal(maptilerProtocol.begin(), maptilerProtocol.end(), url.begin());
     }
-
-    MaptilerFileSource::~MaptilerFileSource() = default;
-
-
 }

@@ -193,7 +193,7 @@ MainResourceLoader::MainResourceLoader(const ResourceOptions& options)
     : impl(std::make_unique<Impl>(FileSourceManager::get()->getFileSource(FileSourceType::Asset, options),
                                   FileSourceManager::get()->getFileSource(FileSourceType::Database, options),
                                   FileSourceManager::get()->getFileSource(FileSourceType::FileSystem, options),
-                                  FileSourceManager::get()->getFileSource(FileSourceType::MapTiler, options),
+                                  FileSourceManager::get()->getFileSource(FileSourceType::Maptiler, options),
                                   FileSourceManager::get()->getFileSource(FileSourceType::Network, options))) {}
 
 MainResourceLoader::~MainResourceLoader() = default;

@@ -24,11 +24,13 @@ public:
             return std::make_unique<DatabaseFileSource>(options);
         });
 
-        registerFileSourceFactory(FileSourceType::FileSystem,
-                                  [](const ResourceOptions&) { return std::make_unique<LocalFileSource>(); });
+        registerFileSourceFactory(FileSourceType::FileSystem, [](const ResourceOptions&) {
+            return std::make_unique<LocalFileSource>();
+        });
 
-        registerFileSourceFactory(FileSourceType::MapTiler,
-                                  [](const ResourceOptions&) { return std::make_unique<MaptilerFileSource>(); });
+        registerFileSourceFactory(FileSourceType::Maptiler, [](const ResourceOptions&) {
+            return std::make_unique<MaptilerFileSource>();
+        });
 
         registerFileSourceFactory(FileSourceType::Network, [](const ResourceOptions& options) {
             std::unique_ptr<FileSource> networkSource = std::make_unique<OnlineFileSource>();
