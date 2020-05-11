@@ -118,7 +118,7 @@ namespace mbgl {
             auto &allocator = doc.GetAllocator();
 
             std::map<std::string, std::string> values;
-            auto db = Database::open(path.c_str(), ReadOnly);
+            auto db = mapbox::sqlite::Database::open(path.c_str(), ReadOnly);
 
             Statement meta(db, "SELECT * from metadata");
             for (Query q(meta); q.run();) {
@@ -258,7 +258,7 @@ namespace mbgl {
         }
 
     private:
-        std::map<std::string, typename Database> db_cache;
+        std::map<std::string, mapbox::sqlite::Database> db_cache;
 
         void close_db(const std::string &path) {
             auto ptr = db_cache.find(path);
@@ -272,13 +272,13 @@ namespace mbgl {
         }
 
         // Multiple databases open simultaneoulsy, to effectively support multiple .mbtiles maps
-        Database &get_db(const std::string &path) {
+        mapbox::sqlite::Database &get_db(const std::string &path) {
             auto ptr = db_cache.find(path);
             if (ptr != db_cache.end()) {
                 return ptr->second;
             };
 
-            auto ptr2 = db_cache.insert(std::pair<std::string, Database>(path, Database::open(path.c_str(), ReadOnly)));
+            auto ptr2 = db_cache.insert(std::pair<std::string, mapbox::sqlite::Database>(path, mapbox::sqlite::Database::open(path.c_str(), ReadOnly)));
             return ptr2.first->second;
         }
     };
