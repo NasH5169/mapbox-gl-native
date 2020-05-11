@@ -9,6 +9,8 @@
 #include <mbgl/util/stopwatch.hpp>
 #include <mbgl/util/thread.hpp>
 
+#include <mbgl/storage/maptiler_file_source.hpp>
+
 #include <cassert>
 #include <map>
 
@@ -23,6 +25,7 @@ public:
         : assetFileSource(std::move(assetFileSource_)),
           databaseFileSource(std::move(databaseFileSource_)),
           localFileSource(std::move(localFileSource_)),
+          maptilerFileSource(std::make_unique<MaptilerFileSource>()),
           onlineFileSource(std::move(onlineFileSource_)) {}
 
     void request(AsyncRequest* req, const Resource& resource, const ActorRef<FileSourceRequest>& ref) {
@@ -66,6 +69,9 @@ public:
         } else if (localFileSource && localFileSource->canRequest(resource)) {
             // Local file request
             tasks[req] = localFileSource->request(resource, callback);
+        } else if (MaptilerFileSource::acceptsURL(resource.url)) {
+            // Maptiler file request
+            tasks[req] = maptilerFileSource->request(resource, callback);
         } else if (databaseFileSource && databaseFileSource->canRequest(resource)) {
             // Try cache only request if needed.
             if (resource.loadingMethod == Resource::LoadingMethod::CacheOnly) {
@@ -121,6 +127,7 @@ private:
     const std::shared_ptr<FileSource> assetFileSource;
     const std::shared_ptr<FileSource> databaseFileSource;
     const std::shared_ptr<FileSource> localFileSource;
+    const std::shared_ptr<MaptilerFileSource> maptilerFileSource;
     const std::shared_ptr<FileSource> onlineFileSource;
     std::map<AsyncRequest*, std::unique_ptr<AsyncRequest>> tasks;
 };
