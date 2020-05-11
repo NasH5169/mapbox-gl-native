@@ -21,6 +21,9 @@
 namespace {
     const std::string maptilerProtocol = "maptiler://";
 
+    bool acceptsURL(const std::string &url) {
+        return std::equal(maptilerProtocol.begin(), maptilerProtocol.end(), url.begin());
+    }
 } // namespace
 
 namespace mbgl {
@@ -302,9 +305,9 @@ namespace mbgl {
 
         } else {
             if (resource.kind == Resource::Tile) {
-                thread->actor().invoke(&Impl::request_tile, resource, req->actor());
+                impl->actor().invoke(&Impl::request_tile, resource, req->actor());
             } else {
-                thread->actor().invoke(&Impl::request_tilejson, resource, req->actor());
+                impl->actor().invoke(&Impl::request_tilejson, resource, req->actor());
             }
         }
         return std::move(req);
@@ -312,9 +315,5 @@ namespace mbgl {
 
     bool MaptilerFileSource::canRequest(const Resource& resource) const {
         return acceptsURL(resource.url);
-    }
-
-    bool MaptilerFileSource::acceptsURL(const std::string &url) {
-        return std::equal(maptilerProtocol.begin(), maptilerProtocol.end(), url.begin());
     }
 }
