@@ -147,8 +147,8 @@ namespace mbgl {
 
             // We use file location with appended parameter query parameter as URL for actual tile data
             std::string tile_url = std::string(resource.url + "?file={x}/{y}/{z}." + format);
-            Value arr(kArrayType);
-            Value tile_url_val(tile_url, allocator);
+            rapidjson::Value arr(kArrayType);
+            rapidjson::Value tile_url_val(tile_url, allocator);
             arr.PushBack(tile_url_val, allocator);
             doc.AddMember("tiles", arr, allocator);
 
@@ -181,7 +181,7 @@ namespace mbgl {
                 if (entry.first == "scale") {
                     doc.AddMember("scale", std::stod(entry.second), allocator);
                 } else if (entry.first == "minzoom" || entry.first == "maxzoom") {
-                    auto name = Value(entry.first, allocator);
+                    auto name = rapidjson::Value(entry.first, allocator);
                     doc.AddMember(name, std::stoi(entry.second), allocator);
                 } else if (entry.first == "bounds") {
                     std::vector<double> x = split(entry.second, ',');
@@ -193,7 +193,7 @@ namespace mbgl {
                     double cLon = (x[0] + x[2]) / 2;
                     double cLat = (x[1] + x[3]) / 2;
                     int cZoom = (minZoom + maxZoom) / 2;
-                    Value bounds_arr(kArrayType);
+                    rapidjson::Value bounds_arr(kArrayType);
                     for (auto vv : x) {
                         bounds_arr.PushBack(vv, allocator);
                     }
@@ -202,14 +202,14 @@ namespace mbgl {
                         doc.AddMember("bounds", bounds_arr, allocator);
                     }
 
-                    Value center_arr(kArrayType);
+                    rapidjson::Value center_arr(kArrayType);
                     center_arr.PushBack(cLon, allocator);
                     center_arr.PushBack(cLat, allocator);
                     center_arr.PushBack(cZoom, allocator);
                     doc.AddMember("center", center_arr, allocator);
                 } else {
-                    Value name = Value(entry.first, allocator);
-                    doc.AddMember(name, Value(entry.second, allocator), allocator);
+                    rapidjson::Value name = rapidjson::Value(entry.first, allocator);
+                    doc.AddMember(name, rapidjson::Value(entry.second, allocator), allocator);
                 }
             }
 
