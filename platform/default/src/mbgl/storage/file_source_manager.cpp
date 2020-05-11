@@ -27,7 +27,7 @@ public:
         registerFileSourceFactory(FileSourceType::FileSystem,
                                   [](const ResourceOptions&) { return std::make_unique<LocalFileSource>(); });
 
-        registerFileSourceFactory(FileSourceType::Maptiler,
+        registerFileSourceFactory(FileSourceType::MapTiler,
                                   [](const ResourceOptions&) { return std::make_unique<MaptilerFileSource>(); });
 
         registerFileSourceFactory(FileSourceType::Network, [](const ResourceOptions& options) {
